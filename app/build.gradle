@@ -53,10 +53,4 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
 }
 
-apply plugin: 'com.google.ar.sceneform.plugin'
-
-sceneform.asset('sampledata/models/andy.obj',
-        'default',
-        'sampledata/models/andy.sfa',
-        'src/main/res/raw/andy')
 
