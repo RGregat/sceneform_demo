@@ -1,0 +1,3 @@
+[submodule "sceneform-android-sdk"]
+	path = sceneform-android-sdk
+	url = https://github.com/RGregat/sceneform-android-sdk.git
