@@ -17,13 +17,18 @@ package com.google.ar.sceneform.samples.hellosceneform;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.app.Service;
 import android.content.Context;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,8 +38,11 @@ import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.rendering.ModelRenderable;
+import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
+
+import java.util.Random;
 
 /**
  * This is an example activity that uses the Sceneform UX package to make common AR tasks easier.
@@ -45,6 +53,8 @@ public class HelloSceneformActivity extends AppCompatActivity {
 
     private ArFragment arFragment;
     private ModelRenderable andyRenderable;
+    private ViewRenderable markerRenderable;
+    private Random random = new Random();
 
     /**
      * Returns false and displays an error message if Sceneform can not run, true if Sceneform can run
@@ -105,9 +115,27 @@ public class HelloSceneformActivity extends AppCompatActivity {
                             return null;
                         });
 
+        View view = ((LayoutInflater) this.getSystemService(Service.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.ar_image_view_component, null);
+        ImageView imageView = view.findViewById(R.id.image_view_ar);
+        imageView.setBackground(getDrawable(R.drawable.ic_measure_orange));
+
+        ViewRenderable
+                .builder()
+                .setView(this, view)
+                .build()
+                .thenAccept(renderable -> markerRenderable = renderable)
+                .exceptionally(throwable -> {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(throwable.getMessage())
+                            .setTitle("Error!");
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    return null;
+                });
+
         arFragment.setOnTapArPlaneListener(
                 (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
-                    if (andyRenderable == null) {
+                    if (andyRenderable == null && markerRenderable == null) {
                         return;
                     }
 
@@ -116,11 +144,25 @@ public class HelloSceneformActivity extends AppCompatActivity {
                     AnchorNode anchorNode = new AnchorNode(anchor);
                     anchorNode.setParent(arFragment.getArSceneView().getScene());
 
-                    // Create the transformable andy and add it to the anchor.
-                    TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
-                    andy.setParent(anchorNode);
-                    andy.setRenderable(andyRenderable);
-                    andy.select();
+                    int randomNumber = random.nextBoolean() ? 1 : 0;
+
+                    switch(randomNumber) {
+                        case 0:
+                            // Create the transformable andy and add it to the anchor.
+                            TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
+                            andy.setParent(anchorNode);
+                            andy.setRenderable(andyRenderable);
+                            andy.select();
+                            break;
+                        case 1:
+                            // Create the transformable andy and add it to the anchor.
+                            TransformableNode marker = new TransformableNode(arFragment.getTransformationSystem());
+                            marker.setParent(anchorNode);
+                            marker.setRenderable(markerRenderable);
+                            marker.select();
+                            break;
+                    }
+
                 });
     }
 }
