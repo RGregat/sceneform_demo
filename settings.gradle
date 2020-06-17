@@ -1,7 +1,12 @@
 include ':app'
 
 
+// Add these lines:
+include ':sceneform'
+project(':sceneform').projectDir=new File('sceneform-android-sdk/sceneformsrc/sceneform')
 
+include ':sceneformux'
+project(':sceneformux').projectDir=new File('sceneform-android-sdk/sceneformux/ux')
 
 
 

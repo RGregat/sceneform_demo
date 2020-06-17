@@ -15,13 +15,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.google.ar.sceneform.samples.hellosceneform"
 
         // Sceneform requires minSdkVersion >= 24.
         minSdkVersion 24
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
     }
@@ -42,15 +42,15 @@ android {
 dependencies {
 
     // Provides ArFragment, and other Sceneform UX resources:
-    implementation "com.google.ar.sceneform.ux:sceneform-ux:1.15.0"
+    //implementation "com.google.ar.sceneform.ux:sceneform-ux:1.15.0"
 
     // Use the Sceneform UX Package built from the source files included in the sceneformux folder.
     //api project(":sceneformux")
-
+    api project(":sceneformux")
     // Alternatively, use ArSceneView without the UX dependency.
     //implementation "com.google.ar.sceneform:core:1.15.0"
 
-    implementation "com.android.support:appcompat-v7:28.0.0"
+    implementation 'androidx.appcompat:appcompat:1.1.0'
 }
 
 apply plugin: 'com.google.ar.sceneform.plugin'
